@@ -1,0 +1,151 @@
+<!--
+  📜 Creative Commons License Notice
+  이 계산기 코드는 CC BY 4.0 라이선스로 배포됩니다.
+  제작자: 설모
+  출처: 직접 제작
+  자세한 정보: https://creativecommons.org/licenses/by/4.0/
+-->
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>공학용 계산기 - 설모 제작</title>
+  <style>
+    body {
+      background: #f4f4f4;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .calculator {
+      background: #fff;
+      padding: 20px;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      width: 360px;
+    }
+    .screen {
+      background: #222;
+      color: #0f0;
+      font-size: 24px;
+      text-align: right;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      min-height: 40px;
+      overflow-x: auto;
+    }
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+    }
+    button {
+      padding: 15px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      background: #eee;
+      transition: background 0.2s ease;
+    }
+    button:hover {
+      background: #ddd;
+    }
+    .operator {
+      background: #4caf50;
+      color: white;
+    }
+    .equals {
+      background: #2196f3;
+      color: white;
+      grid-column: span 2;
+    }
+    .clear {
+      background: #f44336;
+      color: white;
+    }
+    .license {
+      text-align: center;
+      font-size: 12px;
+      color: #666;
+      margin-top: 15px;
+    }
+  </style>
+</head>
+<body>
+  <div class="calculator">
+    <div id="screen" class="screen">0</div>
+    <div class="buttons">
+      <button onclick="append('(')">(</button>
+      <button onclick="append(')')">)</button>
+      <button onclick="append('Math.PI')">π</button>
+      <button onclick="append('Math.E')">e</button>
+      <button class="clear" onclick="clearScreen()">C</button>
+
+      <button onclick="append('Math.sin(')">sin</button>
+      <button onclick="append('Math.cos(')">cos</button>
+      <button onclick="append('Math.tan(')">tan</button>
+      <button onclick="append('Math.log10(')">log</button>
+      <button onclick="append('Math.log(')">ln</button>
+
+      <button onclick="append('7')">7</button>
+      <button onclick="append('8')">8</button>
+      <button onclick="append('9')">9</button>
+      <button onclick="append('/')">÷</button>
+      <button onclick="append('Math.sqrt(')">√</button>
+
+      <button onclick="append('4')">4</button>
+      <button onclick="append('5')">5</button>
+      <button onclick="append('6')">6</button>
+      <button onclick="append('*')">×</button>
+      <button onclick="append('**')">xʸ</button>
+
+      <button onclick="append('1')">1</button>
+      <button onclick="append('2')">2</button>
+      <button onclick="append('3')">3</button>
+      <button onclick="append('-')">−</button>
+      <button onclick="append('%')">mod</button>
+
+      <button onclick="append('0')">0</button>
+      <button onclick="append('.')">.</button>
+      <button class="equals" onclick="calculate()">=</button>
+      <button onclick="append('+')">+</button>
+    </div>
+    <div class="license">
+      ⓒ 2025 설모 제작 – <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a> 라이선스
+    </div>
+  </div>
+
+  <script>
+    let screen = document.getElementById('screen');
+    let input = '';
+
+    function append(value) {
+      input += value;
+      screen.textContent = input;
+    }
+
+    function clearScreen() {
+      input = '';
+      screen.textContent = '0';
+    }
+
+    function calculate() {
+      try {
+        const result = eval(input);
+        screen.textContent = result;
+        input = result.toString();
+      } catch (e) {
+        screen.textContent = '오류';
+        input = '';
+      }
+    }
+  </script>
+</body>
+</html>
+

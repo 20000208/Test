@@ -1,0 +1,207 @@
+<!-- 
+  📜 Creative Commons License Notice
+  이 시계 웹앱은 CC BY 4.0 라이선스로 배포됩니다.
+  제작자: 설모
+  라이선스 링크: https://creativecommons.org/licenses/by/4.0/
+-->
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>디지털 시계 - 설모 제작</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #0d1117;
+      color: #00ffcc;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .clock {
+      font-size: 72px;
+      margin-bottom: 10px;
+      letter-spacing: 2px;
+      transition: color 0.3s;
+    }
+
+    .date {
+      font-size: 24px;
+      margin-bottom: 30px;
+    }
+
+    .controls {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      background: #00ffcc;
+      color: #000;
+      font-weight: bold;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    button:hover {
+      background: #00ddb3;
+    }
+
+    .light-mode {
+      background-color: #f9f9f9;
+      color: #222;
+    }
+
+    .light-mode .clock {
+      color: #222;
+    }
+
+    .license {
+      position: absolute;
+      bottom: 10px;
+      font-size: 12px;
+      color: #888;
+    }
+
+    .light-mode .license {
+      color: #666;
+    }
+
+    .timer-container {
+      display: flex;
+      gap: 10px;
+      margin-top: 30px;
+      align-items: center;
+    }
+
+    .timer-input {
+      font-size: 24px;
+      padding: 10px;
+      width: 60px;
+      text-align: center;
+      border-radius: 8px;
+      border: 2px solid #00ffcc;
+      background: transparent;
+      color: #00ffcc;
+      transition: border-color 0.3s;
+    }
+
+    .timer-input:focus {
+      outline: none;
+      border-color: #00ddb3;
+    }
+
+    .countdown {
+      font-size: 36px;
+      margin-top: 20px;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="clock" id="clock">00:00:00</div>
+  <div class="date" id="date">2025-01-01 (월)</div>
+
+  <div class="controls">
+    <button onclick="toggleTimeFormat()">12/24시간 전환</button>
+    <button onclick="toggleTheme()">테마 전환</button>
+  </div>
+
+  <!-- 타이머 입력 UI -->
+  <div class="timer-container">
+    <input class="timer-input" id="hours" type="number" placeholder="00" min="0" max="23">
+    <span>:</span>
+    <input class="timer-input" id="minutes" type="number" placeholder="00" min="0" max="59">
+    <span>:</span>
+    <input class="timer-input" id="seconds" type="number" placeholder="00" min="0" max="59">
+  </div>
+  
+  <button onclick="startCountdown()">타이머 시작</button>
+
+  <div class="countdown" id="countdown"></div>
+
+  <div class="license">
+    ⓒ 2025 설모 제작 – <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" style="color:inherit;">CC BY 4.0</a>
+  </div>
+
+  <script>
+    let use12Hour = false;
+    let countdownTimer;
+    let remainingTime;
+
+    function updateClock() {
+      const now = new Date();
+
+      let hours = now.getHours();
+      let ampm = '';
+      if (use12Hour) {
+        ampm = hours >= 12 ? ' PM' : ' AM';
+        hours = hours % 12;
+        hours = hours ? hours : 12;
+      }
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const seconds = String(now.getSeconds()).padStart(2, '0');
+      document.getElementById('clock').textContent = 
+        `${String(hours).padStart(2, '0')}:${minutes}:${seconds}${ampm}`;
+
+      const days = ['일','월','화','수','목','금','토'];
+      const dateText = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} (${days[now.getDay()]})`;
+      document.getElementById('date').textContent = dateText;
+    }
+
+    function toggleTimeFormat() {
+      use12Hour = !use12Hour;
+      updateClock();
+    }
+
+    function toggleTheme() {
+      document.body.classList.toggle('light-mode');
+    }
+
+    function startCountdown() {
+      const hours = document.getElementById('hours').value || 0;
+      const minutes = document.getElementById('minutes').value || 0;
+      const seconds = document.getElementById('seconds').value || 0;
+
+      remainingTime = (hours * 3600) + (minutes * 60) + parseInt(seconds);
+      if (remainingTime <= 0) return;
+
+      updateCountdownDisplay();
+      countdownTimer = setInterval(updateCountdown, 1000);
+    }
+
+    function updateCountdown() {
+      if (remainingTime <= 0) {
+        clearInterval(countdownTimer);
+        alert("타이머 완료!");
+        document.getElementById('countdown').textContent = "00:00:00";
+      } else {
+        remainingTime--;
+        updateCountdownDisplay();
+      }
+    }
+
+    function updateCountdownDisplay() {
+      const hours = Math.floor(remainingTime / 3600);
+      const minutes = Math.floor((remainingTime % 3600) / 60);
+      const seconds = remainingTime % 60;
+      document.getElementById('countdown').textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    }
+
+    setInterval(updateClock, 1000);
+    updateClock();
+  </script>
+</body>
+</html>
+
